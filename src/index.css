@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Tipografías ─────────────────────────────────── */
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  /* ── Paleta Linara — editorial cálida ────────────── */
+  --color-cream:          #F5EFE6;
+  --color-cream-subtle:   #FAF7F2;
+  --color-surface:        #FFFFFF;
+
+  --color-charcoal:       #1C1612;
+  --color-charcoal-soft:  #3D3530;
+
+  --color-warm-gray:      #7B6F63;
+  --color-warm-gray-light: #B5A99E;
+
+  --color-border:         #DDD5C8;
+  --color-border-strong:  #C4B8AA;
+
+  --color-accent:         #8B6F47;
+  --color-accent-light:   #C4A882;
+  --color-accent-pale:    #EDE0D0;
+  --color-pill:           #E5DDD5;
+  --color-pill-hover:     #D8CFC6;
+}
+
+/* ── Base ──────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  background-color: var(--color-cream);
+  color: var(--color-charcoal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
