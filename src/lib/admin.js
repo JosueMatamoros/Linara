@@ -1,8 +1,14 @@
-import { supabase } from './supabase'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_SERVICE_KEY,
+  { auth: { persistSession: false } }
+)
 
 function extractStoragePath(imageUrl) {
   if (!imageUrl) return null
-  const marker = '/public/products/'
+  const marker = '/object/public/products/'
   const idx = imageUrl.indexOf(marker)
   return idx !== -1 ? imageUrl.substring(idx + marker.length) : null
 }
@@ -16,7 +22,6 @@ export async function compressToWebP(file, quality = 0.8, size = 800) {
       canvas.width  = size
       canvas.height = size
       const ctx = canvas.getContext('2d')
-      // Recorte centrado tipo object-cover: escalar para cubrir el cuadrado
       const scale = Math.max(size / img.naturalWidth, size / img.naturalHeight)
       const sw = img.naturalWidth  * scale
       const sh = img.naturalHeight * scale
@@ -31,7 +36,6 @@ export async function compressToWebP(file, quality = 0.8, size = 800) {
   })
 }
 
-// ── Lectura ──────────────────────────────────────────
 export async function getAllProducts() {
   const { data, error } = await supabase
     .from('products').select('*').order('created_at', { ascending: false })
@@ -39,7 +43,6 @@ export async function getAllProducts() {
   return data ?? []
 }
 
-// ── Actualizaciones — sin .single() para evitar errores ──
 export async function updatePrice(id, price) {
   const { error } = await supabase.from('products').update({ price }).eq('id', id)
   if (error) throw error
@@ -60,7 +63,6 @@ export async function toggleStock(id, inStock) {
   if (error) throw error
 }
 
-// ── Eliminar (tabla + Storage) ────────────────────────
 export async function deleteProduct(id, imageUrl) {
   const storagePath = extractStoragePath(imageUrl)
   if (storagePath) {
@@ -71,7 +73,6 @@ export async function deleteProduct(id, imageUrl) {
   if (error) throw error
 }
 
-// ── Crear producto ────────────────────────────────────
 export async function createProduct({ category, subcategory, price, sizes, imageFile }) {
   let imageUrl = null
 

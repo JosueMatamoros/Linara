@@ -29,17 +29,9 @@ export default function CategoryCard({ title, description, image, to, index = 0 
 
       {/* Text overlay */}
       <div className="absolute bottom-0 left-0 right-0 p-6 text-surface">
-        <p className="text-[9px] tracking-[0.25em] uppercase text-surface/60 mb-1.5 font-medium">
-          LA COLECCIÓN
-        </p>
         <h3 className="font-serif text-[1.6rem] font-light leading-tight mb-1">
           {title}
         </h3>
-        {description && (
-          <p className="text-[11px] text-surface/65 mb-4 font-light leading-relaxed">
-            {description}
-          </p>
-        )}
         <span className="inline-flex items-center gap-1.5 text-[9px] tracking-[0.18em] uppercase text-surface/75 group-hover:text-surface transition-colors duration-200">
           VER COLECCIÓN
           <ArrowRight

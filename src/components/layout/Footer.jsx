@@ -36,11 +36,8 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between gap-6">
 
         {/* Brand */}
-        <Link
-          to="/"
-          className="font-serif text-xl tracking-[0.22em] text-surface/90 font-medium select-none flex-shrink-0"
-        >
-          LINARA
+        <Link to="/" className="select-none shrink-0">
+          <img src="/logo.webp" alt="Linara" width={280} height={177} className="h-8 w-auto object-contain brightness-0 invert opacity-90" />
         </Link>
 
         {/* Nav — centro */}

@@ -9,7 +9,7 @@ export default function FilterPills({ filters, active, onChange }) {
           key={filter}
           onClick={() => onChange(filter)}
           className={[
-            'flex-shrink-0 px-5 py-2 text-sm font-medium rounded-full',
+            'flex-shrink-0 px-5 py-3 text-sm font-medium rounded-full',
             'transition-all duration-200 cursor-pointer whitespace-nowrap',
             active === filter
               ? 'bg-charcoal text-surface'

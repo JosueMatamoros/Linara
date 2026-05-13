@@ -3,7 +3,7 @@
 @theme {
   /* ── Tipografías ─────────────────────────────────── */
   --font-serif: "Cormorant Garamond", Georgia, serif;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: "Montserrat", system-ui, sans-serif;
 
   /* ── Paleta Linara — editorial cálida ────────────── */
   --color-cream:          #F5EFE6;
@@ -41,6 +41,14 @@ html {
 
 body {
   margin: 0;
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-ticker {
+  animation: ticker 20s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

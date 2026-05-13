@@ -12,11 +12,11 @@ export const CATEGORIES = {
   accesorios: {
     title: 'Accesorios',
     description: 'Completa tu look con los accesorios perfectos',
-    filters: ['Gorras', 'Billeteras', 'Carteras', 'Bolsos', 'Medias'],
+    filters: ['Gorras', 'Billeteras', 'Carteras', 'Bolsos', 'Medias', 'Boxers'],
   },
   zapatos: {
     title: 'Zapatos',
     description: 'Encuentra el calzado perfecto para cada ocasión',
-    filters: ['Zapatillas'],
+    filters: ['Zapatillas', 'Tenis'],
   },
 }

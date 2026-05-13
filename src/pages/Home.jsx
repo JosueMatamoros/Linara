@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import CategoryCard from '../components/ui/CategoryCard'
+import Hero from '../components/ui/Hero'
 
 const PH = '/images/placeholder.jpg'
 
@@ -8,21 +9,21 @@ const MAIN_CATEGORIES = [
     id: 'hombre',
     title: 'Ropa Hombre',
     description: 'Camisas, pantalones, abrigos y más',
-    image: PH,
+    image: '/images/category-men.webp',
     to: '/hombre',
   },
   {
     id: 'mujer',
     title: 'Ropa Mujer',
     description: 'Vestidos, blusas, pantalones y más',
-    image: PH,
+    image: '/images/category-women.webp',
     to: '/mujer',
   },
   {
     id: 'zapatos',
     title: 'Zapatos',
     description: 'Sandalias, botines y calzado casual',
-    image: PH,
+    image: '/images/category-zapatos.webp',
     to: '/zapatos',
   },
 ]
@@ -31,23 +32,26 @@ const ACCESSORIES = [
   {
     id: 'gorras',
     title: 'Gorras',
-    description: 'Estilos para cada temporada',
-    image: PH,
-    to: '/accesorios',
+    image: '/images/category-gorras.webp',
+    to: '/accesorios?filter=Gorras',
   },
   {
     id: 'billeteras',
     title: 'Billeteras',
-    description: 'Cuero genuino y artesanal',
-    image: PH,
-    to: '/accesorios',
+    image: '/images/category-billeteras.webp',
+    to: '/accesorios?filter=Billeteras',
+  },
+  {
+    id: 'carteras',
+    title: 'Carteras',
+    image: '/images/category-carteras.webp',
+    to: '/accesorios?filter=Carteras',
   },
   {
     id: 'bolsos',
     title: 'Bolsos',
-    description: 'Diseño y funcionalidad',
-    image: PH,
-    to: '/accesorios',
+    image: '/images/category-bolsos.webp',
+    to: '/accesorios?filter=Bolsos',
   },
 ]
 
@@ -78,7 +82,8 @@ function SectionHeader({ eyebrow, title, delay = 0 }) {
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-cream" style={{ paddingTop: '72px' }}>
+    <main className="min-h-screen bg-cream">
+      <Hero />
       <section className="max-w-7xl mx-auto px-4 md:px-6 pt-8 md:pt-12 pb-16 md:pb-20 space-y-12 md:space-y-16">
 
         {/* ── Ropa ──────────────────────────────────── */}
@@ -94,7 +99,7 @@ export default function Home() {
         {/* ── Accesorios ────────────────────────────── */}
         <div>
           <SectionHeader eyebrow="COLECCIÓN" title="Accesorios" delay={0.05} />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
             {ACCESSORIES.map((cat, i) => (
               <CategoryCard key={cat.id} {...cat} index={i} />
             ))}

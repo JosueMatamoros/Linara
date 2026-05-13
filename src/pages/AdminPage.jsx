@@ -5,17 +5,16 @@ import AdminProductCard from '../components/admin/AdminProductCard'
 import CreateProductModal from '../components/admin/CreateProductModal'
 
 const CAT_FILTERS = [
-  { value: 'todos',      label: 'Todos' },
-  { value: 'hombre',     label: 'Hombre' },
-  { value: 'mujer',      label: 'Mujer' },
   { value: 'accesorios', label: 'Accesorios' },
   { value: 'zapatos',    label: 'Zapatos' },
+  { value: 'hombre',     label: 'Hombre' },
+  { value: 'mujer',      label: 'Mujer' },
 ]
 
 export default function AdminPage() {
   const [products,   setProducts]   = useState([])
   const [loading,    setLoading]    = useState(true)
-  const [catFilter,  setCatFilter]  = useState('todos')
+  const [catFilter,  setCatFilter]  = useState('accesorios')
   const [subFilter,  setSubFilter]  = useState('Todos')
   const [showCreate, setShowCreate] = useState(false)
 
@@ -31,14 +30,13 @@ export default function AdminPage() {
 
   // Unique subcategories for the selected category
   const subcategories = useMemo(() => {
-    const source = catFilter === 'todos' ? products : products.filter(p => p.category === catFilter)
-    const unique = [...new Set(source.map(p => p.subcategory))].sort()
+    const unique = [...new Set(products.filter(p => p.category === catFilter).map(p => p.subcategory))].sort()
     return ['Todos', ...unique]
   }, [products, catFilter])
 
   const filtered = useMemo(() => {
     return products.filter(p => {
-      if (catFilter !== 'todos' && p.category !== catFilter) return false
+      if (p.category !== catFilter) return false
       if (subFilter !== 'Todos' && p.subcategory !== subFilter) return false
       return true
     })
@@ -46,9 +44,7 @@ export default function AdminPage() {
 
   const counts = useMemo(() =>
     CAT_FILTERS.reduce((acc, f) => {
-      acc[f.value] = f.value === 'todos'
-        ? products.length
-        : products.filter(p => p.category === f.value).length
+      acc[f.value] = products.filter(p => p.category === f.value).length
       return acc
     }, {})
   , [products])
@@ -153,7 +149,7 @@ export default function AdminPage() {
 
         {/* Grid — máximo 3 columnas */}
         {!loading && filtered.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-x-6">
             {filtered.map(product => (
               <AdminProductCard
                 key={product.id}

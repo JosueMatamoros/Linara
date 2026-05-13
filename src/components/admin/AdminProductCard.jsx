@@ -1,9 +1,8 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { Trash2, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 import {
-  updatePrice, updateSubcategory, updateSizes,
-  toggleStock, deleteProduct,
+  updatePrice, updateSubcategory, updateSizes, toggleStock, deleteProduct,
 } from '../../lib/admin'
 import { CATEGORIES } from '../../data/categories'
 
@@ -22,7 +21,6 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
   const [sizeInput,     setSizeInput]    = useState('')
   const [confirmDel,    setConfirmDel]   = useState(false)
   const [error,         setError]        = useState(null)
-  const sizeRef = useRef()
 
   function patch(fields) {
     const next = { ...p, ...fields }
@@ -89,43 +87,41 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
     <>
       <motion.div layout className="cursor-default">
 
-        {/* ── Imagen ── */}
+        {/* Imagen — idéntica a ProductCard */}
         <div className="relative aspect-square rounded-xl overflow-hidden bg-cream-subtle mb-3">
           {p.image_url
             ? <img
                 src={p.image_url}
                 alt={p.subcategory}
-                className={`w-full h-full object-cover scale-105 transition-opacity duration-300 ${!p.in_stock ? 'opacity-50' : ''}`}
+                className={`w-full h-full object-cover scale-105 transition-opacity duration-300 ${!p.in_stock ? 'opacity-60' : ''}`}
+                loading="lazy"
               />
             : <div className="w-full h-full flex items-center justify-center text-warm-gray-light text-xs">Sin imagen</div>
           }
 
-          {/* Badge agotado sobre la imagen */}
+          {/* Badge agotado — igual a ProductCard pero a la izquierda para no chocar con el botón borrar */}
           {!p.in_stock && (
-            <div className="absolute inset-0 flex items-end justify-center pb-4 pointer-events-none">
-              <span className="bg-charcoal/75 text-surface text-[9px] tracking-[0.2em] uppercase px-3 py-1 rounded-full backdrop-blur-sm">
-                Agotado
-              </span>
-            </div>
+            <span className="absolute top-3 left-3 bg-charcoal/80 text-surface text-[9px] tracking-[0.15em] uppercase font-medium px-2.5 py-1.5 rounded-full backdrop-blur-sm">
+              Agotado
+            </span>
           )}
 
-          {/* Botón eliminar — arriba derecha */}
+          {/* Botón eliminar — donde el carrito en ProductCard */}
           <button
             onClick={() => setConfirmDel(true)}
-            className="absolute top-3 right-3 w-9 h-9 bg-surface/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm cursor-pointer hover:scale-110 hover:bg-red-50 transition-all duration-150 group/del"
+            className="absolute top-3 right-3 w-8 h-8 bg-surface/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm cursor-pointer hover:scale-110 transition-all duration-150 group/del"
             aria-label="Eliminar producto"
           >
-            <Trash2 size={14} strokeWidth={1.8} className="text-charcoal group-hover/del:text-red-500 transition-colors" />
+            <Trash2 size={13} strokeWidth={1.8} className="text-charcoal group-hover/del:text-red-500 transition-colors" />
           </button>
         </div>
 
-        {/* ── Info ── */}
-        <div className="space-y-2">
+        {/* Info — misma estructura que ProductCard */}
+        <div className="space-y-1.5">
 
-          {/* Subcategoría + Precio */}
+          {/* Subcategoría | Precio */}
           <div className="flex items-center justify-between gap-2">
 
-            {/* Subcategoría — select con opciones de la categoría */}
             {editingSub ? (
               <select
                 autoFocus
@@ -143,15 +139,14 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
               <button
                 onClick={() => setEditingSub(true)}
                 className="text-[10px] tracking-[0.14em] uppercase font-medium text-warm-gray hover:text-accent transition-colors cursor-pointer text-left truncate"
-                title="Click para cambiar categoría"
+                title="Click para cambiar subcategoría"
               >
                 {p.subcategory}
               </button>
             )}
 
-            {/* Precio — con fondo destacado al editar */}
             {editingPrice ? (
-              <div className="flex items-center gap-0.5 bg-accent-pale rounded-lg px-2.5 py-1 flex-shrink-0">
+              <div className="flex items-center gap-0.5 flex-shrink-0">
                 <span className="text-sm font-semibold text-charcoal">$</span>
                 <input
                   autoFocus
@@ -162,13 +157,13 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
                   onChange={e => setPriceInput(e.target.value)}
                   onBlur={savePrice}
                   onKeyDown={e => { if (e.key === 'Enter') savePrice(); if (e.key === 'Escape') setEditingPrice(false) }}
-                  className="text-sm font-semibold text-charcoal bg-transparent outline-none w-16 text-right"
+                  className="text-sm font-semibold text-charcoal bg-accent-pale outline-none w-16 text-right rounded px-1"
                 />
               </div>
             ) : (
               <button
                 onClick={() => { setPriceInput(String(p.price)); setEditingPrice(true) }}
-                className={`text-sm font-semibold flex-shrink-0 px-2.5 py-1 rounded-lg hover:bg-accent-pale transition-colors cursor-pointer ${
+                className={`text-sm font-semibold flex-shrink-0 hover:text-accent transition-colors cursor-pointer ${
                   p.in_stock ? 'text-charcoal' : 'text-warm-gray-light line-through'
                 }`}
                 title="Click para editar precio"
@@ -178,54 +173,52 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
             )}
           </div>
 
-          {/* Toggle disponibilidad — siempre visible */}
-          <button
-            onClick={handleToggleStock}
-            className={`w-full flex items-center justify-center gap-2 py-2 rounded-xl text-[10px] tracking-[0.12em] uppercase font-medium transition-all duration-200 cursor-pointer border ${
-              p.in_stock
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                : 'bg-red-50 text-red-500 border-red-200 hover:bg-red-100'
-            }`}
-          >
-            <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${p.in_stock ? 'bg-emerald-500' : 'bg-red-400'}`} />
-            {p.in_stock ? 'Disponible · click para agotar' : 'Agotado · click para disponible'}
-          </button>
-
-          {/* Tallas — chips más grandes */}
-          <div className="flex flex-wrap gap-1.5 items-center pt-0.5">
+          {/* Tallas — mismas pills que ProductCard + X para quitar + input para agregar */}
+          <div className="flex flex-wrap gap-1 items-center">
             {p.sizes.map(size => (
               <span
                 key={size}
-                className={`inline-flex items-center gap-1 text-xs border px-2.5 py-1.5 rounded-lg leading-none font-medium ${
+                className={`inline-flex items-center gap-1 text-[9px] border px-2 py-1 rounded leading-none ${
                   p.in_stock ? 'text-warm-gray border-border' : 'text-warm-gray-light border-border/50 line-through'
                 }`}
               >
                 {size}
                 <button
                   onClick={() => removeSize(size)}
-                  className="text-warm-gray-light hover:text-red-400 transition-colors cursor-pointer ml-0.5"
+                  className="min-w-[20px] min-h-[20px] flex items-center justify-center text-warm-gray-light hover:text-red-400 transition-colors cursor-pointer"
                   aria-label={`Quitar talla ${size}`}
                 >
-                  <X size={12} strokeWidth={2.5} />
+                  <X size={10} strokeWidth={2.5} />
                 </button>
               </span>
             ))}
-
             <input
-              ref={sizeRef}
               value={sizeInput}
               onChange={e => setSizeInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && addSize()}
               placeholder="+ talla"
-              className="text-xs border border-dashed border-border rounded-lg px-2.5 py-1.5 bg-transparent outline-none text-warm-gray placeholder:text-warm-gray-light w-16 focus:border-charcoal transition-colors"
+              className="text-[9px] border border-dashed border-border rounded px-2 py-1 bg-transparent outline-none text-warm-gray placeholder:text-warm-gray-light w-14 focus:border-charcoal transition-colors leading-none"
             />
           </div>
+
+          {/* Toggle stock */}
+          <button
+            onClick={handleToggleStock}
+            className={`w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[9px] tracking-[0.1em] uppercase font-medium transition-all duration-200 cursor-pointer border ${
+              p.in_stock
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                : 'bg-red-50 text-red-500 border-red-200 hover:bg-red-100'
+            }`}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${p.in_stock ? 'bg-emerald-500' : 'bg-red-400'}`} />
+            {p.in_stock ? 'Disponible' : 'Agotado'}
+          </button>
 
           {error && <p className="text-[9px] text-red-400 leading-tight">{error}</p>}
         </div>
       </motion.div>
 
-      {/* ── Modal confirmación eliminar ── */}
+      {/* Modal confirmación eliminar */}
       <AnimatePresence>
         {confirmDel && (
           <motion.div
@@ -247,9 +240,7 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
               <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-5">
                 <Trash2 size={22} className="text-red-400" strokeWidth={1.5} />
               </div>
-              <h3 className="font-serif text-2xl text-charcoal font-light mb-2">
-                ¿Eliminar producto?
-              </h3>
+              <h3 className="font-serif text-2xl text-charcoal font-light mb-2">¿Eliminar producto?</h3>
               <p className="text-sm text-warm-gray leading-relaxed mb-7">
                 Esta acción no se puede deshacer. El producto y su imagen serán eliminados permanentemente.
               </p>
