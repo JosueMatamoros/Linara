@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { Menu, X, ShoppingBag } from 'lucide-react'
+import { useCart } from '../../context/CartContext'
 
 const NAV_LINKS = [
   { label: 'HOMBRE',     to: '/hombre' },
@@ -12,7 +13,7 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
-  const [cartCount] = useState(0)
+  const { count: cartCount } = useCart()
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-cream/95 backdrop-blur-sm border-b border-border">
