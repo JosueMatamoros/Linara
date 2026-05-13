@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import { CartProvider } from './context/CartContext'
@@ -6,6 +7,12 @@ import Footer from './components/layout/Footer'
 import Home from './pages/Home'
 import CategoryPage from './pages/CategoryPage'
 import AdminPage from './pages/AdminPage'
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  return null
+}
 
 function PageTransition({ children }) {
   return (
@@ -33,7 +40,9 @@ function StoreLayout({ children }) {
 function AnimatedRoutes() {
   const location = useLocation()
   return (
-    <AnimatePresence mode="wait">
+    <>
+      <ScrollToTop />
+      <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/admin" element={
           <PageTransition><AdminPage /></PageTransition>
@@ -50,6 +59,7 @@ function AnimatedRoutes() {
         } />
       </Routes>
     </AnimatePresence>
+    </>
   )
 }
 

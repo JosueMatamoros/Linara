@@ -58,8 +58,7 @@ const up = (delay = 0) => ({
 export default function Hero() {
   return (
     <section
-      className="relative min-h-[100dvh] flex flex-col justify-center overflow-hidden bg-cream"
-      style={{ paddingTop: '72px' }}
+      className="relative min-h-[100dvh] flex flex-col justify-center overflow-hidden bg-cream pt-[54px] md:pt-[72px]"
     >
       {/* Fondo sutil */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_60%_40%,#EDE0D033,transparent)] pointer-events-none" />
@@ -121,15 +120,15 @@ export default function Hero() {
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden lg:block"
+            className="hidden lg:block py-10"
           >
-            <div className="aspect-[3/4] rounded-[2.5rem] overflow-hidden">
+            <div className="h-[68vh] rounded-[2.5rem] overflow-hidden">
               <img
-                src="/images/category-women.webp"
+                src="/images/hero-flatlay.webp"
                 alt="Colección Linara"
-                className="w-full h-full object-cover"
-                width={600}
-                height={800}
+                className="w-full h-full object-cover object-top"
+                width={1024}
+                height={1536}
               />
             </div>
           </motion.div>

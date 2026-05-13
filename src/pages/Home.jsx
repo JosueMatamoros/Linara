@@ -2,8 +2,6 @@ import { motion } from 'motion/react'
 import CategoryCard from '../components/ui/CategoryCard'
 import Hero from '../components/ui/Hero'
 
-const PH = '/images/placeholder.jpg'
-
 const MAIN_CATEGORIES = [
   {
     id: 'hombre',
