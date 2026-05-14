@@ -141,7 +141,7 @@ export default function CreateProductModal({ onCreated, onClose }) {
           <div>
             <label className="text-[10px] uppercase tracking-widest text-warm-gray block mb-1.5">Precio</label>
             <div className="flex items-center gap-1 border-b border-border pb-1">
-              <span className="text-sm text-warm-gray">$</span>
+              <span className="text-sm text-warm-gray">₡</span>
               <input
                 type="number"
                 min="0"

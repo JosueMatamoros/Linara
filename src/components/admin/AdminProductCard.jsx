@@ -147,7 +147,7 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
 
             {editingPrice ? (
               <div className="flex items-center gap-0.5 flex-shrink-0">
-                <span className="text-sm font-semibold text-charcoal">$</span>
+                <span className="text-sm font-semibold text-charcoal">₡</span>
                 <input
                   autoFocus
                   type="number"
@@ -168,7 +168,7 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
                 }`}
                 title="Click para editar precio"
               >
-                ${Number(p.price).toFixed(2)}
+                ₡{Number(p.price).toFixed(2)}
               </button>
             )}
           </div>

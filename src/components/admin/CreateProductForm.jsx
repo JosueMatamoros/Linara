@@ -156,7 +156,7 @@ export default function CreateProductForm({ onCreated, onClose }) {
           <div>
             <label className="text-[10px] uppercase tracking-widest text-warm-gray block mb-1.5">Precio</label>
             <div className="flex items-center gap-2 border border-border rounded-xl px-4 py-2.5 focus-within:border-charcoal transition-colors">
-              <span className="text-sm text-warm-gray font-light">$</span>
+              <span className="text-sm text-warm-gray font-light">₡</span>
               <input
                 type="number"
                 min="0"
