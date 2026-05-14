@@ -81,7 +81,7 @@ export default function ProductCard({ id, price, subcategory, sizes = [], image,
             {subcategory}
           </p>
           <p className={`text-sm font-semibold ${in_stock ? 'text-charcoal' : 'text-warm-gray-light'}`}>
-            ₡{price.toFixed(2)}
+            ₡{Math.round(price).toLocaleString('es-CR')}
           </p>
         </div>
 

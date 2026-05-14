@@ -29,7 +29,7 @@ export default function AdminPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  useEffect(() => { setSubFilter(null); setPage(1) }, [catFilter])
+  useEffect(() => { setPage(1) }, [catFilter])
   useEffect(() => { setPage(1) }, [subFilter])
 
   const subcategories = useMemo(() => {
@@ -40,6 +40,13 @@ export default function AdminPage() {
         .filter(Boolean)
     )].sort()
   }, [products, catFilter])
+
+  // Auto-selecciona la primera subcategoría al cambiar de categoría o al cargar productos
+  useEffect(() => {
+    if (subcategories.length > 0 && !subcategories.includes(subFilter)) {
+      setSubFilter(subcategories[0])
+    }
+  }, [subcategories])
 
   const filtered = useMemo(() => {
     return products.filter(p => {
@@ -142,7 +149,7 @@ export default function AdminPage() {
                 {subcategories.map(s => (
                   <button
                     key={s}
-                    onClick={() => setSubFilter(prev => prev === s ? null : s)}
+                    onClick={() => setSubFilter(s)}
                     className={[
                       'flex-shrink-0 px-3 py-1 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer whitespace-nowrap',
                       subFilter === s
@@ -172,7 +179,7 @@ export default function AdminPage() {
             {/* Grid */}
             {!loading && paginated.length > 0 && (
               <>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-x-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 md:gap-x-6 items-stretch">
                   {paginated.map(product => (
                     <AdminProductCard
                       key={product.id}

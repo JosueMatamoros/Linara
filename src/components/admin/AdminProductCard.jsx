@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { Trash2, X } from 'lucide-react'
+import { Trash2, X, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 import {
-  updatePrice, updateSubcategory, updateSizes, toggleStock, deleteProduct,
+  updatePrice, updateSubcategory, updateSizes, toggleStock, deleteProduct, updateCategory,
 } from '../../lib/admin'
 import { CATEGORIES } from '../../data/categories'
+
+const CAT_LABELS = { hombre: 'Hombre', mujer: 'Mujer', accesorios: 'Accesorios', zapatos: 'Zapatos' }
 
 const SUBCATEGORIES = Object.fromEntries(
   Object.entries(CATEGORIES).map(([key, val]) => [
@@ -17,6 +19,7 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
   const [p, setP]                       = useState(product)
   const [editingPrice,  setEditingPrice] = useState(false)
   const [editingSub,    setEditingSub]   = useState(false)
+  const [editingCat,    setEditingCat]   = useState(false)
   const [priceInput,    setPriceInput]   = useState('')
   const [sizeInput,     setSizeInput]    = useState('')
   const [confirmDel,    setConfirmDel]   = useState(false)
@@ -46,6 +49,17 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
     patch({ subcategory: val })
     try { await updateSubcategory(p.id, val) }
     catch (e) { patch({ subcategory: prev }); setError(e.message) }
+  }
+
+  async function saveCat(newCat) {
+    if (!newCat || newCat === p.category) { setEditingCat(false); return }
+    setEditingCat(false)
+    const firstSub = (SUBCATEGORIES[newCat] ?? [])[0] ?? ''
+    const prevCat  = p.category
+    const prevSub  = p.subcategory
+    patch({ category: newCat, subcategory: firstSub })
+    try { await updateCategory(p.id, newCat, firstSub) }
+    catch (e) { patch({ category: prevCat, subcategory: prevSub }); setError(e.message) }
   }
 
   async function removeSize(size) {
@@ -85,39 +99,69 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
 
   return (
     <>
-      <motion.div layout className="cursor-default">
+      <motion.div layout className="cursor-default h-full flex flex-col">
 
-        {/* Imagen — idéntica a ProductCard */}
-        <div className="relative aspect-square rounded-xl overflow-hidden bg-cream-subtle mb-3">
+        {/* Imagen */}
+        <div className="relative aspect-square rounded-xl overflow-hidden bg-cream-subtle">
           {p.image_url
             ? <img
                 src={p.image_url}
                 alt={p.subcategory}
-                className={`w-full h-full object-cover scale-105 transition-opacity duration-300 ${!p.in_stock ? 'opacity-60' : ''}`}
+                className={`w-full h-full object-cover scale-105 transition-opacity duration-300 ${!p.in_stock ? 'opacity-50' : ''}`}
                 loading="lazy"
               />
             : <div className="w-full h-full flex items-center justify-center text-warm-gray-light text-xs">Sin imagen</div>
           }
 
-          {/* Badge agotado — igual a ProductCard pero a la izquierda para no chocar con el botón borrar */}
-          {!p.in_stock && (
-            <span className="absolute top-3 left-3 bg-charcoal/80 text-surface text-[9px] tracking-[0.15em] uppercase font-medium px-2.5 py-1.5 rounded-full backdrop-blur-sm">
-              Agotado
-            </span>
+          {/* Categoría — top-left pegado a esquina */}
+          {editingCat ? (
+            <select
+              autoFocus
+              value={p.category}
+              onChange={e => saveCat(e.target.value)}
+              onBlur={() => setEditingCat(false)}
+              className="absolute top-1.5 left-1.5 z-10 text-[9px] tracking-[0.12em] uppercase font-medium bg-surface/95 text-charcoal border border-border rounded-full px-2 py-0.5 outline-none cursor-pointer shadow-sm"
+            >
+              {Object.entries(CAT_LABELS).map(([val, label]) => (
+                <option key={val} value={val}>{label}</option>
+              ))}
+            </select>
+          ) : (
+            <button
+              onClick={() => setEditingCat(true)}
+              title="Click para cambiar categoría"
+              className="absolute top-1.5 left-1.5 z-10 inline-flex items-center gap-1 text-[9px] tracking-[0.12em] uppercase font-medium bg-surface/90 backdrop-blur-sm text-charcoal rounded-full px-2 py-0.5 shadow-sm hover:bg-accent-pale hover:text-accent transition-colors cursor-pointer"
+            >
+              {CAT_LABELS[p.category] ?? p.category}
+              <ChevronDown size={9} strokeWidth={2} />
+            </button>
           )}
 
-          {/* Botón eliminar — donde el carrito en ProductCard */}
+          {/* Botón eliminar — top-right pegado a esquina */}
           <button
             onClick={() => setConfirmDel(true)}
-            className="absolute top-3 right-3 w-8 h-8 bg-surface/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm cursor-pointer hover:scale-110 transition-all duration-150 group/del"
+            className="absolute top-1.5 right-1.5 w-7 h-7 bg-surface/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm cursor-pointer hover:scale-110 transition-all duration-150 group/del"
             aria-label="Eliminar producto"
           >
-            <Trash2 size={13} strokeWidth={1.8} className="text-charcoal group-hover/del:text-red-500 transition-colors" />
+            <Trash2 size={12} strokeWidth={1.8} className="text-charcoal group-hover/del:text-red-500 transition-colors" />
+          </button>
+
+          {/* Toggle stock — pegado al borde inferior */}
+          <button
+            onClick={handleToggleStock}
+            className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 w-[calc(100%-12px)] flex items-center justify-center gap-1.5 py-1 rounded-full text-[9px] tracking-[0.12em] uppercase font-medium backdrop-blur-sm transition-all duration-200 cursor-pointer border ${
+              p.in_stock
+                ? 'bg-emerald-50/90 text-emerald-700 border-emerald-200/80 hover:bg-emerald-100/90'
+                : 'bg-charcoal/75 text-surface border-transparent hover:bg-charcoal/90'
+            }`}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${p.in_stock ? 'bg-emerald-500' : 'bg-red-400'}`} />
+            {p.in_stock ? 'Disponible' : 'Agotado'}
           </button>
         </div>
 
-        {/* Info — misma estructura que ProductCard */}
-        <div className="space-y-1.5">
+        {/* Info */}
+        <div className="flex flex-col flex-1 gap-1.5 pt-3">
 
           {/* Subcategoría | Precio */}
           <div className="flex items-center justify-between gap-2">
@@ -168,7 +212,7 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
                 }`}
                 title="Click para editar precio"
               >
-                ₡{Number(p.price).toFixed(2)}
+                ₡{Math.round(p.price).toLocaleString('es-CR')}
               </button>
             )}
           </div>
@@ -197,22 +241,9 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
               onChange={e => setSizeInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && addSize()}
               placeholder="+ talla"
-              className="text-[9px] border border-dashed border-border rounded px-2 py-1 bg-transparent outline-none text-warm-gray placeholder:text-warm-gray-light w-14 focus:border-charcoal transition-colors leading-none"
+              className="text-xs border border-dashed border-border rounded-lg px-3 py-2 bg-transparent outline-none text-warm-gray placeholder:text-warm-gray-light w-20 focus:border-charcoal transition-colors"
             />
           </div>
-
-          {/* Toggle stock */}
-          <button
-            onClick={handleToggleStock}
-            className={`w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[9px] tracking-[0.1em] uppercase font-medium transition-all duration-200 cursor-pointer border ${
-              p.in_stock
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                : 'bg-red-50 text-red-500 border-red-200 hover:bg-red-100'
-            }`}
-          >
-            <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${p.in_stock ? 'bg-emerald-500' : 'bg-red-400'}`} />
-            {p.in_stock ? 'Disponible' : 'Agotado'}
-          </button>
 
           {error && <p className="text-[9px] text-red-400 leading-tight">{error}</p>}
         </div>

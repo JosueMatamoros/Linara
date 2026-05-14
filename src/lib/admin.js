@@ -53,6 +53,11 @@ export async function updateSubcategory(id, subcategory) {
   if (error) throw error
 }
 
+export async function updateCategory(id, category, subcategory) {
+  const { error } = await supabase.from('products').update({ category, subcategory }).eq('id', id)
+  if (error) throw error
+}
+
 export async function updateSizes(id, sizes) {
   const { error } = await supabase.from('products').update({ sizes }).eq('id', id)
   if (error) throw error
