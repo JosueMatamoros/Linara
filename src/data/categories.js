@@ -2,12 +2,12 @@ export const CATEGORIES = {
   hombre: {
     title: 'Hombre',
     description: 'Descubre nuestra colección de ropa para hombre',
-    filters: ['Camisetas', 'Camisas', 'Pantalones', 'Sudaderas', 'Polos', 'Chaquetas'],
+    filters: ['Camisetas', 'Camisas', 'Pantalones', 'Shorts', 'Sudaderas', 'Polos', 'Chaquetas'],
   },
   mujer: {
     title: 'Mujer',
     description: 'Descubre nuestra colección de ropa para mujer',
-    filters: ['Vestidos', 'Blusas', 'Pantalones', 'Faldas', 'Chaquetas', 'Abrigos'],
+    filters: ['Vestidos', 'Blusas', 'Pantalones', 'Shorts', 'Faldas', 'Chaquetas', 'Abrigos'],
   },
   accesorios: {
     title: 'Accesorios',
