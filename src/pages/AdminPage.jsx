@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { getAllProducts } from '../lib/admin'
+import { getAllProducts, getSubcategoriesMap } from '../lib/admin'
 import AdminProductCard from '../components/admin/AdminProductCard'
 import CreateProductForm from '../components/admin/CreateProductForm'
 import Pagination from '../components/ui/Pagination'
@@ -15,16 +15,20 @@ const CAT_FILTERS = [
 ]
 
 export default function AdminPage() {
-  const [products,   setProducts]   = useState([])
-  const [loading,    setLoading]    = useState(true)
-  const [catFilter,  setCatFilter]  = useState('accesorios')
-  const [subFilter,  setSubFilter]  = useState(null)
-  const [showCreate, setShowCreate] = useState(false)
-  const [page,       setPage]       = useState(1)
+  const [products,        setProducts]        = useState([])
+  const [subcategoriesMap, setSubcategoriesMap] = useState({})
+  const [loading,         setLoading]         = useState(true)
+  const [catFilter,       setCatFilter]       = useState('accesorios')
+  const [subFilter,       setSubFilter]       = useState(null)
+  const [showCreate,      setShowCreate]      = useState(false)
+  const [page,            setPage]            = useState(1)
 
   useEffect(() => {
-    getAllProducts()
-      .then(data => setProducts(data))
+    Promise.all([getAllProducts(), getSubcategoriesMap()])
+      .then(([products, subsMap]) => {
+        setProducts(products)
+        setSubcategoriesMap(subsMap)
+      })
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [])
@@ -49,11 +53,13 @@ export default function AdminPage() {
   }, [subcategories])
 
   const filtered = useMemo(() => {
-    return products.filter(p => {
-      if (p.category !== catFilter) return false
-      if (subFilter && p.subcategory !== subFilter) return false
-      return true
-    })
+    return products
+      .filter(p => {
+        if (p.category !== catFilter) return false
+        if (subFilter && p.subcategory !== subFilter) return false
+        return true
+      })
+      .sort((a, b) => (b.in_stock ? 1 : 0) - (a.in_stock ? 1 : 0))
   }, [products, catFilter, subFilter])
 
   const counts = useMemo(() =>
@@ -184,6 +190,7 @@ export default function AdminPage() {
                     <AdminProductCard
                       key={product.id}
                       product={product}
+                      subcategoriesMap={subcategoriesMap}
                       onUpdated={handleUpdated}
                       onDeleted={handleDeleted}
                     />

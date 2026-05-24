@@ -43,6 +43,22 @@ export async function getAllProducts() {
   return data ?? []
 }
 
+export async function getSubcategoriesMap() {
+  const { data, error } = await supabase
+    .from('products')
+    .select('category, subcategory')
+  if (error) throw error
+  const map = {}
+  for (const { category, subcategory } of data ?? []) {
+    if (!category || !subcategory) continue
+    if (!map[category]) map[category] = new Set()
+    map[category].add(subcategory)
+  }
+  return Object.fromEntries(
+    Object.entries(map).map(([k, v]) => [k, [...v].sort()])
+  )
+}
+
 export async function updatePrice(id, price) {
   const { error } = await supabase.from('products').update({ price }).eq('id', id)
   if (error) throw error

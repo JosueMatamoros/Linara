@@ -4,18 +4,9 @@ import { motion, AnimatePresence } from 'motion/react'
 import {
   updatePrice, updateSubcategory, updateSizes, toggleStock, deleteProduct, updateCategory,
 } from '../../lib/admin'
-import { CATEGORIES } from '../../data/categories'
-
 const CAT_LABELS = { hombre: 'Hombre', mujer: 'Mujer', accesorios: 'Accesorios', zapatos: 'Zapatos' }
 
-const SUBCATEGORIES = Object.fromEntries(
-  Object.entries(CATEGORIES).map(([key, val]) => [
-    key,
-    val.filters.filter(f => f !== 'Todos'),
-  ])
-)
-
-export default function AdminProductCard({ product, onUpdated, onDeleted }) {
+export default function AdminProductCard({ product, subcategoriesMap = {}, onUpdated, onDeleted }) {
   const [p, setP]                       = useState(product)
   const [editingPrice,  setEditingPrice] = useState(false)
   const [editingSub,    setEditingSub]   = useState(false)
@@ -54,7 +45,7 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
   async function saveCat(newCat) {
     if (!newCat || newCat === p.category) { setEditingCat(false); return }
     setEditingCat(false)
-    const firstSub = (SUBCATEGORIES[newCat] ?? [])[0] ?? ''
+    const firstSub = (subcategoriesMap[newCat] ?? [])[0] ?? ''
     const prevCat  = p.category
     const prevSub  = p.subcategory
     patch({ category: newCat, subcategory: firstSub })
@@ -95,7 +86,7 @@ export default function AdminProductCard({ product, onUpdated, onDeleted }) {
     } catch (e) { setError(e.message); setConfirmDel(false) }
   }
 
-  const subcatOptions = SUBCATEGORIES[p.category] ?? []
+  const subcatOptions = subcategoriesMap[p.category] ?? []
 
   return (
     <>

@@ -126,9 +126,10 @@ export default function CategoryPage() {
     return (config?.filters ?? []).filter(f => subcats.has(f))
   }, [products, config])
 
-  const filtered = useMemo(() =>
-    activeFilter ? products.filter(p => p.subcategory === activeFilter) : products
-  , [products, activeFilter])
+  const filtered = useMemo(() => {
+    const list = activeFilter ? products.filter(p => p.subcategory === activeFilter) : products
+    return [...list].sort((a, b) => (b.in_stock ? 1 : 0) - (a.in_stock ? 1 : 0))
+  }, [products, activeFilter])
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)
   const paginated  = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
